@@ -51,6 +51,7 @@
 ## 公開 (静的な画面)
 
 - `.github/workflows/pages.yml`: `main` への反映と手動実行で、`npm ci` → `npm run build:client` → `nuxt generate` → GitHub Pages へ配備します (リポジトリの Pages の設定は Source を Actions にします)。
+- 公開のホスト名は `3d-map.torosaba.net` です。`3d.torosaba.net` という名前は存在せず、作りません。
 - カスタムドメインは、リポジトリの設定 (Settings の Pages) で設定し、HTTPS の強制を有効にします。Actions で配備するときは `public/CNAME` は使われません。
 - DNS は、画面のホスト名を GitHub Pages のホスト名への CNAME にします (プロキシなし。証明書は GitHub が発行します)。DNS は Terraform のリポジトリで管理し、変更は Pull Request → マージで自動的に適用されます。
 - 画面だけを変えたときは `main` へ反映するだけです。
