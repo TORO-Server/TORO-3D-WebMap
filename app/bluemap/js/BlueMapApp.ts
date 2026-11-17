@@ -86,7 +86,7 @@ export interface AppState {
  * settings.json の scripts のうち、この画面が代わりに持っているもの。
  * MarumaSign Companion が足す看板の 3D 表示 (js/marumasign3d.js?v=...) は app/bluemap/marumasign/ が同じことをするので読まない
  * (手元で前のスクリプトと見比べるときは、npm run dev で ?marumasign=legacy を付けると読む)
- * toro-refresh.js は、ブラウザに残っている前の画面を読み直させるもの (toro-edge が足す)。この画面には要らない
+ * toro-refresh.js は、ブラウザに残っている前の画面を読み直させるもの (入り口のプロキシが足す)。この画面には要らない
  */
 export function isReplacedScript(url: string): boolean {
     if (/(^|\/)toro-refresh\.js([?#]|$)/i.test(url)) return true;
