@@ -17,7 +17,7 @@
 
 - 正本は `nuxt.config.ts` の `runtimeConfig.public.apiBase` です。画面のコードに URL は書きません。
 - 画面は `app/bluemap/api.ts` の `apiUrl(path)`、`wsUrl()`、`staticUrl(path)` だけで通信先を決めます。`apiUrl` は API の基点からの相対、`staticUrl` は画面と同じ場所の静的ファイルです。
-- ビルド時に差し替えるときは `NUXT_PUBLIC_API_BASE` を使います。自動処理ではリポジトリの変数 `API_BASE` (秘密ではありません) です。
+- ビルド時に差し替えるときは `NUXT_PUBLIC_API_BASE` を使います。自動処理では置き場の変数 `API_BASE` (秘密ではありません) です。
 - API の基点は、2D の地図の API (`/map/v1`) と重ならないように、`/map3d/v1` を接頭辞にします。
 
 ## API が返すもの
@@ -50,10 +50,10 @@
 
 ## 公開 (静的な画面)
 
-- `.github/workflows/pages.yml`: `main` への反映と手動実行で、`npm ci` → `npm run build:client` → `nuxt generate` → GitHub Pages へ配備します (リポジトリの Pages の設定は Source を Actions にします)。
+- `.github/workflows/pages.yml`: `main` への反映と手動実行で、`npm ci` → `npm run build:client` → `nuxt generate` → GitHub Pages へ配備します (置き場の Pages の設定は Source を Actions にします)。
 - 公開のホスト名は `3d-map.torosaba.net` です。`3d.torosaba.net` という名前は存在せず、作りません。
-- カスタムドメインは、リポジトリの設定 (Settings の Pages) で設定し、HTTPS の強制を有効にします。Actions で配備するときは `public/CNAME` は使われません。
-- DNS は、画面のホスト名を GitHub Pages のホスト名への CNAME にします (プロキシなし。証明書は GitHub が発行します)。DNS は Terraform のリポジトリで管理し、変更は Pull Request → マージで自動的に適用されます。
+- カスタムドメインは、置き場の設定 (Settings の Pages) で設定し、HTTPS の強制を有効にします。Actions で配備するときは `public/CNAME` は使われません。
+- DNS は、画面のホスト名を GitHub Pages のホスト名への CNAME にします (プロキシなし。証明書は GitHub が発行します)。DNS は Terraform の置き場で管理し、変更は Pull Request → マージで自動的に適用されます。
 - 画面だけを変えたときは `main` へ反映するだけです。
 
 ## Tunnel のパスルールの追加 (API のホスト)
@@ -80,14 +80,14 @@ API は Cloudflare Tunnel の公開アプリケーションで受けています
 3. Tunnel に `^/map3d/` の規則を足す (上の手順)。切り戻し: 規則を削除。
 4. 実ブラウザで、新しいサイトの地図の表示、ライブ更新、看板、モバイル、ホーム画面への追加を確かめる。基準: 地図が開き、コンソールにエラーがなく、通信の宛先がすべて API の基点または静的なサイト自身である。
 5. 切り替え: 従来のサイトのホスト名から新しいサイトへ転送する。看板の画像を配る側のオリジンの許可と、看板の管理側が書く URL を、新しいサイトに更新する。切り戻し: 転送を解除する (従来のサイトは変えずに残す)。
-6. 従来の画面のコードを、元のリポジトリから取り除く (本番の反映は、4 と 5 が済んでから)。切り戻し: 取り除く前のイメージのタグへ戻す。
+6. 従来の画面のコードを、元の置き場から取り除く (本番の反映は、4 と 5 が済んでから)。切り戻し: 取り除く前のイメージのタグへ戻す。
 
 ## API の側への申し送り
 
-API の実装 (別のリポジトリ) は、次を担います。この画面の側では実装しません。
+API の実装 (別の置き場) は、次を担います。この画面の側では実装しません。
 
 - 地図のデータベースを読む、タイル・テクスチャ・地図の設定の配信 (上の表の `maps/<地図>/` の静的な部分)。
 - ライブ関係: プレイヤーの位置とマーカー (BlueMap 本体が持つライブのデータを API が受け渡す形)、ライブ更新の WebSocket (`ws`)。従来の経路は同じ内容を `/up/ws` で返しています。
-- 看板のサーバー側の処理 (`marumasign/`)、建築データのリソース (`mcassets/`)。看板の画像を配る別の窓口と、クライアント情報の経路を 3D の API に含めるかは、判断が要ります。
+- 看板のサーバー側の処理 (`marumasign/`)、建築データのリソース (`mcassets/`)。看板の画像を配る別の API と、クライアント情報の経路を 3D の API に含めるかは、判断が要ります。
 - ルーティング: Tunnel の規則 (上) と、中継サーバーと API の振り分け。
 - 切り替え: 上の手順 5。
