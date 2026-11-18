@@ -2,11 +2,27 @@
 //  - API (地図のタイル・ライブ情報・看板のデータなど): apiUrl() / wsUrl()。基点 (apiBase) の正本は nuxt.config.ts の runtimeConfig.public.apiBase
 //  - 画面と一緒に配る小さな静的ファイル (settings.json, lang/, assets/, pwa/): staticUrl()
 // Nuxt に依存しないよう、基点は app/app.vue が起動時に configureApi() で渡す (試験や型の確認でも読み込める)。
-let base = ''
+//  - 地図のタイル (hires の .prbm と lowres の .png) だけは別のホスト (assets): tileUrl()。基点 (tileBase) の正本は nuxt.config.ts の runtimeConfig.public.tileBase
+import { joinBase } from './base-url'
 
-/** 起動時に 1 度だけ、API の基点を設定する。末尾の / は取り除く */
-export function configureApi(apiBase: string): void {
+let base = ''
+let tileRoot = ''
+
+/** 起動時に 1 度だけ、API の基点とタイルの基点を設定する。末尾の / は取り除く */
+export function configureApi(apiBase: string, tileBase: string): void {
   base = String(apiBase).replace(/\/+$/, '')
+  tileRoot = String(tileBase).replace(/\/+$/, '')
+}
+
+/** 末尾の / なしのタイルの基点 */
+export function tileBase(): string {
+  if (!tileRoot) throw new Error('タイルの基点が設定されていません (configureApi)')
+  return tileRoot
+}
+
+/** 地図のタイルの URL (assets のホスト)。path は基点からの相対 (例: 'maps/world/tiles/0/x0/z0.prbm')。タイル以外 (settings.json, textures.json, live など) は apiUrl を使う */
+export function tileUrl(path: string): string {
+  return joinBase(tileBase(), path)
 }
 
 /** 末尾の / なしの API の基点 */
@@ -17,7 +33,7 @@ export function apiBase(): string {
 
 /** API の URL。path は基点からの相対 (例: 'maps/overworld/settings.json')。先頭の / は付けても付けなくてもよい */
 export function apiUrl(path: string): string {
-  return `${apiBase()}/${path.replace(/^\/+/, '')}`
+  return joinBase(apiBase(), path)
 }
 
 /** API の WebSocket の URL (基点の https は wss、http は ws。基点が相対パスなら、いまのページのオリジンから) */

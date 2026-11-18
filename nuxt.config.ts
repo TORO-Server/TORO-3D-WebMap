@@ -61,6 +61,9 @@ export default defineNuxtConfig({
       // 画面が読む API の基点。この文字列の正本はここ 1 か所 (画面は app/bluemap/api.ts の apiUrl() と wsUrl() だけで API に触る)。
       // ビルド時に NUXT_PUBLIC_API_BASE を設定すると差し替えられる (自動処理ではリポジトリの変数 API_BASE)。docs/deployment.md
       apiBase: 'https://api.torosaba.net/map3d/v1',
+      // 地図のタイル (maps/<地図>/tiles/ の hires と lowres) だけを読む基点 (app/bluemap/api.ts の tileUrl())。パスは apiBase と同じで、ホスト名だけが assets。
+      // この文字列の正本もここ 1 か所。ビルド時に NUXT_PUBLIC_TILE_BASE で差し替えられる (自動処理ではリポジトリの変数 TILE_BASE)。docs/deployment.md
+      tileBase: 'https://assets.torosaba.net/map3d/v1',
     },
   },
   // npm run dev では、手元の画面が API の基点 (既定は本番) から読む。別の API を使うときは NUXT_PUBLIC_API_BASE を設定する

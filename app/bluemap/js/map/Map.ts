@@ -47,6 +47,7 @@ export interface MapData {
 	id: string;
 	sorting: number;
 	mapDataRoot: string;
+	tileDataRoot: string;
 	liveDataRoot: string;
 	settingsUrl: string;
 	texturesUrl: string;
@@ -125,8 +126,9 @@ export class Map {
 	 * @param loadBlocker {function: Promise<void>}
 	 * @param events {EventTarget}
 	 * @param clientDecompression {boolean}
+	 * @param tileDataRoot {string} the root of the map-tiles (hires/lowres). Defaults to mapDataRoot
 	 */
-	constructor(id: string, mapDataRoot: string, liveDataRoot: string, loadBlocker: () => Promise<void>, events: EventTarget = null, clientDecompression: boolean) {
+	constructor(id: string, mapDataRoot: string, liveDataRoot: string, loadBlocker: () => Promise<void>, events: EventTarget = null, clientDecompression: boolean, tileDataRoot: string = mapDataRoot) {
 		Object.defineProperty( this, 'isMap', { value: true } );
 
 		this.loadBlocker = loadBlocker;
@@ -136,6 +138,7 @@ export class Map {
 			id: id,
 			sorting: 1000000,
 			mapDataRoot: mapDataRoot,
+			tileDataRoot: tileDataRoot,
 			liveDataRoot: liveDataRoot,
 			settingsUrl: mapDataRoot + "/settings.json",
 			texturesUrl: mapDataRoot + (clientDecompression ? "/textures.json.gz" : "/textures.json"),
@@ -206,7 +209,7 @@ export class Map {
                 this.hiresMaterial = this.createHiresMaterial(hiresVertexShader, hiresFragmentShader, uniforms, textures);
 
                 this.hiresTileManager = new TileManager(new TileLoader(
-									`${this.data.mapDataRoot}/tiles/0/`,
+									`${this.data.tileDataRoot}/tiles/0/`,
 									this.hiresMaterial,
 									this.data.hires,
 									this.loadBlocker,
@@ -217,7 +220,7 @@ export class Map {
 								this.lowresTileManager = [];
 								for (let i = 0; i < this.data.lowres.lodCount; i++) {
 									this.lowresTileManager[i] = new TileManager(new LowresTileLoader(
-										`${this.data.mapDataRoot}/tiles/`,
+										`${this.data.tileDataRoot}/tiles/`,
 										this.data.lowres,
 										i + 1,
 										lowresVertexShader,

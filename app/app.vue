@@ -1,10 +1,10 @@
 <script setup lang="ts">
-// 3D 地図の入口。API の基点 (nuxt.config.ts の runtimeConfig.public.apiBase) を画面に渡し、画面 (app/bluemap/BlueMapView.vue) を出す。
+// 3D 地図の入口。API の基点 (runtimeConfig.public.apiBase) とタイルの基点 (同 tileBase。どちらも nuxt.config.ts) を画面に渡し、画面 (app/bluemap/BlueMapView.vue) を出す。
 // 画面のコードは Nuxt に依存しないので、基点はここで 1 度だけ渡す (app/bluemap/api.ts)
 import { defineAsyncComponent, type Component } from 'vue'
 import { configureApi } from '~/bluemap/api'
 
-configureApi(String(useRuntimeConfig().public.apiBase))
+configureApi(String(useRuntimeConfig().public.apiBase), String(useRuntimeConfig().public.tileBase))
 
 const View = defineAsyncComponent<Component>(() => import('~/bluemap/BlueMapView.vue'))
 

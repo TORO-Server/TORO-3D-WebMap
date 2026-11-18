@@ -20,6 +20,14 @@
 - ビルド時に差し替えるときは `NUXT_PUBLIC_API_BASE` を使います。自動処理では置き場の変数 `API_BASE` (秘密ではありません) です。
 - API の基点は、2D の地図の API (`/map/v1`) と重ならないように、`/map3d/v1` を接頭辞にします。
 
+## タイルの基点 (tileBase)
+
+- 地図のタイル (`maps/<地図>/tiles/...` の hires `.prbm` と lowres `.png`) だけは、API とは別のホスト (assets) から読みます。パスは API と同じで、ホスト名だけが違います (`https://assets.torosaba.net/map3d/v1/maps/<地図>/tiles/<lod>/...`)。
+- 正本は `nuxt.config.ts` の `runtimeConfig.public.tileBase` です (`apiBase` の隣)。画面は `app/bluemap/api.ts` の `tileUrl(path)` で基点を決め、`Map.ts` が `tileDataRoot + '/tiles/'` からタイルを読みます。
+- `settings.json`、`textures.json`、プレイヤーの顔、ライブ、看板、`mcassets/` などタイル以外は `apiUrl` のまま (API のホスト) です。
+- ビルド時に差し替えるときは `NUXT_PUBLIC_TILE_BASE` を使います。自動処理では置き場の変数 `TILE_BASE` (秘密ではありません)。
+- assets のホストは、`/map3d/v1/maps/<地図>/tiles/` を API へ振り分ける入り口 (別の担当) が前提です。
+
 ## API が返すもの
 
 下の表のパスは、API の基点からの相対です。`<地図>` は地図の id (`settings.json` の `maps`) です。
