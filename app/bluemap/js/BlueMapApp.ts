@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  */
 import "./BlueMap";
-import {apiUrl, staticUrl, wsUrl} from "../api";
+import {apiUrl, staticUrl, tileUrl, wsUrl} from "../api";
 import {MapViewer} from "./MapViewer";
 import {MapControls} from "./controls/map/MapControls";
 import {FreeFlightControls} from "./controls/freeflight/FreeFlightControls";
@@ -58,6 +58,7 @@ export interface BlueMapSettings {
     lowresSliderMin: number;
     startLocation?: string;
     mapDataRoot: string;
+    tileDataRoot: string;
     liveDataRoot: string;
     maps: string[];
     scripts: string[];
@@ -418,7 +419,7 @@ export class BlueMapApp {
         // create maps
         if (settings.maps !== undefined){
             let loadingPromises = settings.maps.map(mapId => {
-                let map = new BlueMapMap(mapId, settings.mapDataRoot + "/" + mapId, settings.liveDataRoot + "/" + mapId, this.loadBlocker, this.mapViewer.events, this.settings.clientDecompression);
+                let map = new BlueMapMap(mapId, settings.mapDataRoot + "/" + mapId, settings.liveDataRoot + "/" + mapId, this.loadBlocker, this.mapViewer.events, this.settings.clientDecompression, settings.tileDataRoot + "/" + mapId);
                 maps.push(map);
 
                 return map.loadSettings(this.mapViewer.revalidatedUrls)
@@ -457,6 +458,7 @@ export class BlueMapApp {
                 lowresSliderDefault: 2000,
                 lowresSliderMin: 500,
                 mapDataRoot: "",
+                tileDataRoot: "",
                 liveDataRoot: "",
                 maps: [
                     "world",
@@ -468,7 +470,8 @@ export class BlueMapApp {
                 clientDecompression: false,
                 ...loaded,
                 // 地図のデータとライブ情報の置き場は settings.json ではなく、API の基点 (api.ts) から決める
-                ...{ mapDataRoot: apiUrl("maps"), liveDataRoot: apiUrl("maps") }
+                // タイルだけは assets のホスト (tileUrl)。settings.json や textures.json などは apiUrl のまま
+                ...{ mapDataRoot: apiUrl("maps"), tileDataRoot: tileUrl("maps"), liveDataRoot: apiUrl("maps") }
             };
         }
 
