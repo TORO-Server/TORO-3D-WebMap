@@ -17,6 +17,9 @@ export default defineNuxtConfig({
         { name: 'description', content: 'TORO Server (Minecraft) のワールドの 3D 地図' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1' },
       ],
+      link: [
+        { rel: 'canonical', href: 'https://3d-map.torosaba.net/' },
+      ],
     },
   },
   typescript: {
