@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /maps/
+Disallow: /_marumasign/
+Disallow: /mcassets/
+Disallow: /up/
+Sitemap: https://3d-map.torosaba.net/sitemap.xml
